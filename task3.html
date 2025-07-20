@@ -1,0 +1,149 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <title>Daily Fun Hub</title>
+  <style>
+    body {
+      margin: 0;
+      font-family: 'Segoe UI', sans-serif;
+      background: linear-gradient(to right, #e0f7fa, #fff3e0);
+      color: #333;
+      padding: 20px;
+    }
+
+    h1 {
+      text-align: center;
+      font-size: 2.5rem;
+      color: #00796b;
+      margin-bottom: 40px;
+    }
+
+    .container {
+      display: flex;
+      flex-wrap: wrap;
+      justify-content: center;
+      gap: 30px;
+    }
+
+    .card {
+      background: white;
+      border-radius: 15px;
+      box-shadow: 0 8px 16px rgba(0,0,0,0.1);
+      padding: 25px;
+      max-width: 320px;
+      min-width: 280px;
+      transition: transform 0.3s ease;
+    }
+
+    .card:hover {
+      transform: translateY(-5px);
+    }
+
+    h2 {
+      color: #00838f;
+      font-size: 1.5rem;
+      margin-bottom: 10px;
+    }
+
+    p {
+      font-size: 1rem;
+      margin: 15px 0;
+    }
+
+    button {
+      background: #00897b;
+      color: white;
+      border: none;
+      padding: 10px 18px;
+      border-radius: 25px;
+      font-size: 1rem;
+      cursor: pointer;
+      transition: background 0.3s ease;
+      margin-top: 10px;
+    }
+
+    button:hover {
+      background: #00695c;
+    }
+
+    #result, #joke {
+      font-weight: bold;
+      margin-top: 10px;
+    }
+
+    @media (max-width: 600px) {
+      h1 {
+        font-size: 2rem;
+      }
+
+      .card {
+        width: 100%;
+      }
+    }
+  </style>
+</head>
+<body>
+
+  <h1>🎉 Welcome to Your Daily Fun Hub!</h1>
+
+  <div class="container">
+
+    <!-- Greeting Card -->
+    <div class="card">
+      <h2>👋 Hello, Friend!</h2>
+      <p>This is your space to relax, learn, and laugh. Whether you're here for a quick quiz or a dose of humor, you're in the right place.</p>
+    </div>
+
+    <!-- Quiz Card -->
+    <div class="card">
+      <h2>🧠 Quick Quiz</h2>
+      <p>What is the capital of Japan?</p>
+      <button onclick="checkAnswer('A')">A) Seoul</button>
+      <button onclick="checkAnswer('B')">B) Tokyo</button>
+      <button onclick="checkAnswer('C')">C) Bangkok</button>
+      <p id="result"></p>
+    </div>
+
+    <!-- Joke Card -->
+    <div class="card">
+      <h2>😂 Joke of the Day</h2>
+      <p>Click below to laugh a little!</p>
+      <button onclick="getJoke()">Tell me a joke</button>
+      <p id="joke">🤔...</p>
+    </div>
+
+  </div>
+
+  <script>
+    // Quiz Logic
+    function checkAnswer(answer) {
+      const result = document.getElementById('result');
+      if (answer === 'B') {
+        result.textContent = "🎉 Correct! Tokyo is the capital of Japan.";
+        result.style.color = "green";
+      } else {
+        result.textContent = "❌ Oops! That's not right.";
+        result.style.color = "red";
+      }
+    }
+
+    // Fetch Joke from API
+    // Fetch Joke from API
+async function getJoke() {
+  const jokeEl = document.getElementById('joke');
+  jokeEl.textContent = "Loading your joke... 😂";
+  try {
+    const res = await fetch('https://official-joke-api.appspot.com/random_joke');
+    const data = await res.json();
+    jokeEl.textContent = `${data.setup} 🤔 ... ${data.punchline} 😂`;
+  } catch {
+    jokeEl.textContent = "🚫 Could not fetch joke. Try again later!";
+  }
+}
+
+    
+  </script>
+
+</body>
+</html>
