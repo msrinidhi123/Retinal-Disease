@@ -1,0 +1,207 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Retinal Disease Classifier</title>
+  <style>
+    body {
+      margin: 0;
+      padding: 0;
+      font-family: 'Segoe UI', sans-serif;
+      background: url("A_2D_digital_illustration_screenshot_showcases_a_w.png") no-repeat center center fixed;
+      background-size: cover;
+      animation: fadeInBg 2s ease-in-out;
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      min-height: 100vh;
+    }
+
+    header {
+      background: rgba(0, 64, 128, 0.85);
+      color: white;
+      padding: 1.5rem;
+      text-align: center;
+      font-size: 2rem;
+      font-weight: bold;
+      animation: slideIn 1s ease-out;
+      width: 100%;
+      position: fixed;
+      top: 0;
+    }
+
+    .container {
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      min-height: 100vh;
+      width: 100%;
+    }
+
+    .form-box {
+      background: rgba(255, 255, 255, 0.95);
+      padding: 2rem;
+      border-radius: 16px;
+      box-shadow: 0 8px 20px rgba(0, 0, 0, 0.1);
+      max-width: 500px;
+      width: 100%;
+      margin: 1rem;
+      animation: fadeInUp 1s ease-out;
+      z-index: 10;
+    }
+
+    .form-box h2 {
+      margin-bottom: 1rem;
+      color: #004080;
+    }
+
+    input, button {
+      width: 100%;
+      padding: 0.75rem;
+      margin: 0.5rem 0;
+      border: 1px solid #ccc;
+      border-radius: 8px;
+      font-size: 1rem;
+    }
+
+    button {
+      background: #004080;
+      color: white;
+      cursor: pointer;
+      border: none;
+      transition: background 0.3s ease;
+    }
+
+    button:hover {
+      background: #0059b3;
+    }
+
+    #result {
+      margin-top: 1rem;
+      font-size: 1.2rem;
+      color: #333;
+      text-align: center;
+    }
+
+    footer {
+      background: rgba(0,0,0,0.05);
+      text-align: center;
+      padding: 1rem;
+      color: #555;
+      font-size: 0.9rem;
+      position: fixed;
+      bottom: 0;
+      width: 100%;
+    }
+
+    @keyframes slideIn {
+      from { transform: translateY(-50px); opacity: 0; }
+      to { transform: translateY(0); opacity: 1; }
+    }
+
+    @keyframes fadeInUp {
+      from { transform: translateY(20px); opacity: 0; }
+      to { transform: translateY(0); opacity: 1; }
+    }
+
+    @keyframes fadeInBg {
+      from { opacity: 0; }
+      to { opacity: 1; }
+    }
+  </style>
+</head>
+<body>
+  <header>Retinal Disease Classifier</header>
+
+  <div class="container">
+    <!-- Center Form Box for Patient Details -->
+    <div class="form-box" id="patient-form">
+      <h2>Enter Patient Details</h2>
+      <input type="text" id="name" placeholder="Full Name" required>
+      <input type="number" id="age" placeholder="Age" required>
+      <input type="tel" id="phone" placeholder="Phone Number" required>
+      <input type="email" id="email" placeholder="Email Address" required>
+      <button onclick="submitPatientDetails()">Continue to Image Upload</button>
+    </div>
+
+    <!-- Step 2: Image Upload Form -->
+    <div class="form-box" id="upload-form-box" style="display: none;">
+      <h2>Upload Retinal Image</h2>
+      <form id="upload-form" enctype="multipart/form-data">
+        <input type="file" name="image" id="file-upload" accept="image/*" required>
+        <button type="submit">Predict</button>
+      </form>
+      <div id="result"></div>
+    </div>
+  </div>
+
+  <footer>
+    This application is intended for educational purposes only. For medical advice, please consult a licensed professional.
+  </footer>
+
+  <script>
+    function submitPatientDetails() {
+      const name = document.getElementById("name").value;
+      const age = document.getElementById("age").value;
+      const phone = document.getElementById("phone").value;
+      const email = document.getElementById("email").value;
+
+      if (name && age && phone && email) {
+        document.getElementById("patient-form").style.display = "none";
+        document.getElementById("upload-form-box").style.display = "block";
+      } else {
+        alert("Please fill in all patient details.");
+      }
+    }
+
+    const form = document.getElementById('upload-form');
+    const resultDiv = document.getElementById('result');
+
+    form.addEventListener('submit', async (e) => {
+      e.preventDefault();
+
+      const fileInput = document.getElementById('file-upload');
+      const file = fileInput.files[0];
+      if (!file) return;
+
+      const formData = new FormData();
+      formData.append('image', file);
+
+      resultDiv.innerHTML = '<em>Analyzing...</em>';
+
+      try {
+        const response = await fetch('upload.php', {
+          method: 'POST',
+          body: formData
+        });
+
+        const data = await response.json();
+
+        if (data.error) {
+          resultDiv.innerHTML = `<span style="color:red;">${data.error}</span>`;
+        } else {
+          resultDiv.innerHTML = `
+            <div style="animation: fadeInUp 0.5s ease;">
+              <strong>PREDICTED PROBABILITIES:</strong> ${data.class} <br>
+                         </div>
+          `;
+        }
+      } catch (err) {
+        resultDiv.innerHTML = '<span style="color:red;">Prediction failed. Please try again later.</span>';
+      }
+    });
+  </script>
+</body>
+</html>
+
+
+
+
+
+
+
+
+
+
+
